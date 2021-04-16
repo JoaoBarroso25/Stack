@@ -5,159 +5,60 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
-#include <ctype.h>
-#include <math.h>
 #include "stack.h"
+#include "parser.h"
 
 /**
- * \brief Função Parse
+ * \brief Função ReadNewLine
  *
- * Função Parse --> Onde estão localizadas todas as Expressões Matemáticas.
+ * Função ReadNewLine
  *
- * x
+ * @param  --> Recebe o endereço de memória da linha.
  *
- * @param line  --> A linha que foi lida e da qual se vai fazer o parse.
- * @param s     --> Corresponde à stack.
+ * @return --> O comprimento da String "aux" menos dois.
  */
+int ReadNewLine(char* line)
+{
+    char aux[10240];
 
-void parse(char* line, STACK* s) {
-    char delims[] = " \t\n";
-    DATA elem, Y, X, XY;
-    char* sobra;
-    XY.type = LONG;
-    for (char* token = strtok(line, delims); token != NULL; token = strtok(NULL, delims)) {
-        //   long val_i = strtol(token, &sobra, 10);
-        elem.LONG = strtol(token, &sobra, 10);
-        if (strlen(sobra) == 0) {
-            push(s, elem);
-        }
-        else{
-            if (strcmp(token, "+") == 0) {
-                Y = pop(s);
-                X = pop(s);
-                XY.LONG = X.LONG + Y.LONG;
-                push(s, XY);
-            }
-            if (strcmp(token, "*") == 0) {
-                Y = pop(s);
-                X = pop(s);
-                XY.LONG = X.LONG * Y.LONG;
-                push(s, XY);
-            }
-            if (strcmp(token, "-") == 0) {
-                Y = pop(s);
-                X = pop(s);
-                XY.LONG = X.LONG - Y.LONG;
-                push(s, XY);
-            }
+    assert(fgets(aux, 10240, stdin) != NULL);
+    assert(aux[strlen(aux) - 1] == '\n');
 
-            if (strcmp(token, "/") == 0) {
-                Y = pop(s);
-                X = pop(s);
-                XY.LONG = X.LONG / Y.LONG;
-                push(s, XY);
-            }
-            if (strcmp(token, "%") == 0) {
-                Y = pop(s);
-                X = pop(s);
-                XY.LONG = X.LONG % Y.LONG;
-                push(s, XY);
-            }
-            if (strcmp(token, "&") == 0) {
-                Y = pop(s);
-                X = pop(s);
-                XY.LONG = X.LONG & Y.LONG;
-                push(s, XY);
-            }
-            if (strcmp(token, "^") == 0) {
-                Y = pop(s);
-                X = pop(s);
-                XY.LONG = X.LONG ^ Y.LONG;
-                push(s, XY);
-            }
-            if (strcmp(token, "|") == 0) {
-                Y = pop(s);
-                X = pop(s);
-                XY.LONG = X.LONG | Y.LONG;
-                push(s, XY);
-            }
-            if (strcmp(token, "#") == 0) {
-                Y = pop(s);
-                X = pop(s);
-                XY.LONG = pow (X.LONG , Y.LONG);
-                push(s, XY);
-            }
-            if (strcmp(token, ")") == 0) {
-                X = pop(s);
-                XY.LONG = X.LONG + 1;
-                push(s, XY);
-            }
-            if (strcmp(token, "(") == 0) {
-                X = pop(s);
-                XY.LONG = X.LONG - 1;
-                push(s, XY);
-            }
-            if (strcmp(token, "~") == 0) {
-                X = pop(s);
-                XY.LONG = ~(X.LONG);
-                push(s, XY);
-            }
-        }
-        if (isdigit(line[strlen(line) - 1])) {
-            X = pop(s);
-            XY.LONG = X.LONG;
-            push(s, XY);
-        }
-    }
-    print_stack(s);
+    strncat(line, aux, strlen(aux)-1);
+
+    return(strlen(aux) - 2);
 }
 
 /**
  * \brief Função Main
  *
  * Função Principal do Programa
- *      . Devolve NULL senão conseguir ler a linha.
- *      . Verifica se o último caractere da linha é o '\n'.
- *      . Invocamos a função Parse que recebe uma linha uma stack s.
  *
  * @return --> Retorna 0.
  */
-
 int main() {
-    char line[10240];
+    char line[10240], aux[10240];
     STACK* s;
+    int i,count;
 
     s = create_stack();
+    assert(fgets(aux, 10240, stdin) != NULL);
+    assert( aux[strlen(aux) - 1] == '\n');
 
-    assert(fgets(line, 10240, stdin) != NULL);
-    assert( line[strlen(line) - 1] == '\n');
+    line[0] = '\0';
+    i = 0;
+    count = 0;
+    while (aux[i] != '\n'){
+        if (aux[i] != 'l') {
+            line[count] = aux[i];
+        }
+        else count += ReadNewLine(line);
+        i++;
+        count++;
+        line[count] = '\0';
+    }
 
-    parse(line, s);
+    parser(line, s);
+
     return 0;
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
