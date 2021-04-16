@@ -1,5 +1,5 @@
 /**
- *  @file Stack - Ficheiro que contém todas as funções auxiliares para o Ficheiro Main.
+ *  @file Stack - Ficheiro que contém todas as Funções relativas à Stack.
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,10 +8,10 @@
 /**
  * \brief Função Has_Type
  *
- * Função responsável por verificar se um inteiro é de um certo tipo.
+ * Função Has_Type --> Responsável por verificar se um inteiro é de um certo tipo.
  *
- * @param elem --> Tipo de Dados que vai ser comparado
- * @param mask --> Intiero ao qual vai ser feita a verificação
+ * @param elem --> Tipo de Dados que vai ser comparado.
+ * @param mask --> Inteiro ao qual vai ser feita a verificação.
  *
  * @return --> Retorna 1 se os dois tipos são iguais e retorna 0, caso contrário.
  */
@@ -22,7 +22,7 @@ int has_type(DATA elem, int mask) {
 /**
  * \brief Função Create_Stack
  *
- * Função responsável por criar a Stack.
+ * Função Create_Stack --> Responsável por criar a Stack.
  *
  * @return --> Retorna a Stack.
  */
@@ -37,7 +37,7 @@ STACK *create_stack() {
 /**
  * \brief Função Push
  *
- * Função responsável por colocar um elemento no top de uma Stack.
+ * Função Push --> Responsável por colocar um elemento no top de uma Stack.
  *
  * @param s     --> Corresponde à Stack.
  * @param elem  --> Corresponde ao elemento que irá ser colocado no topo da Stack.
@@ -54,7 +54,7 @@ void push(STACK *s, DATA elem) {
 /**
  * \brief Função Pop
  *
- * Função responsável por eliminar um elemento do topo da Stack.
+ * Função Pop --> Responsável por eliminar um elemento do topo da Stack.
  *
  * @param s --> Corresponde à Stack.
  * @return  --> A eliminação do item da stack.
@@ -63,10 +63,11 @@ DATA pop(STACK *s) {
     s->n_elems--;
     return s->stack[s->n_elems];
 }
+
 /**
  * \brief Função Top
  *
- * Função responsável por retornar o elemento no topo da Stack.
+ * Função Top --> Responsável por retornar o elemento no topo da Stack.
  *
  * @param s --> Corresponde à Stack.
  * @return  --> Retorna o elemento no topo da Stack.
@@ -78,7 +79,7 @@ DATA top(STACK *s) {
 /**
  * \brief Função Is_Empty
  *
- * Função que verifica se uma stack está ou não vazia.
+ * Função Is_Empty --> Que verifica se uma stack está ou não vazia.
  *
  * @param s --> Corresponde à Stack.
  * @return  --> Retorna 0.
@@ -90,26 +91,46 @@ int is_empty(STACK *s) {
 /**
  * \brief Função Print_Stack
  *
- * Função responsável por dar display na tela da stack.
+ * Função Print_Stack --> Responsável por dar display na tela da stack.
  *
  * @param s --> Recebe a stack à iqual vai imprimir.
  */
 void print_stack(STACK *s) {
     for(int K = 0; K < s->n_elems; K++) {
         DATA elem = s->stack[K];
-        TYPE type = elem.type;
-        switch(type) {
+//        TYPE type = elem.type;
+        switch(elem.type) {
             case LONG:
                 printf("""%ld", elem.LONG); break;
             case DOUBLE:
-                printf(" ""%g", elem.DOUBLE); break;
+                printf("""%g", elem.DOUBLE); break;
             case CHAR:
-                printf(" ""%c", elem.CHAR); break;
+                printf("""%c", elem.CHAR); break;
             case STRING:
-                printf(" ""%s", elem.STRING); break;
+                printf("""%s", elem.STRING); break;
         }
     }
     printf("\n");
+}
+
+/**
+ * \brief Função Find_Elem
+ *
+ * Função Find_Elem --> Responsável por encontrar um elemento na stack
+ *
+ * @param s --> Corresponde à Stack.
+ * @param i --> Corresponde ao elemento a ser procurado.
+ *
+ * @return --> Se encontrar o parâmetro i retorna o conteúdo do contador dentro da Stack, caso contrário, retorna a NULL.
+ */
+
+DATA * Find_Elem(STACK* s, long i) {
+    int count = 0;
+    for (int k = s->n_elems-1; k >=0; k--, count++)
+        if (k == i)
+            return (&s->stack[count]);
+
+    return NULL;
 }
 
 #define STACK_OPERATION(_type, _name)         \
@@ -126,13 +147,13 @@ void print_stack(STACK *s) {
   }
 
 /**
- *  \brief Onde definimos todos os casos posíveis de operações com Stacks.
- *
- *  Operações com Stacks
- *
- * @param s     --> corresponde ao tipo do conteúdo da Stack.
- * @param val   --> corresponde ao valor do contéudo da Stack.
- */
+*  \brief Operações com Stacks
+*
+*  Operações com Stacks --> Onde definimos todos os casos posíveis de operações com Stacks.
+*
+* @param s     --> Corresponde ao tipo do conteúdo da Stack.
+* @param val   --> Corresponde ao valor do contéudo da Stack.
+*/
 STACK_OPERATION(long, LONG)
 STACK_OPERATION(double, DOUBLE)
 STACK_OPERATION(char, CHAR)
