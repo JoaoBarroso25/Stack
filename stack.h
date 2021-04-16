@@ -1,7 +1,3 @@
-//
-// Created by a95195 on 26/03/2021.
-//
-
 #ifndef UNTITLED13_STACK_H
 #define UNTITLED13_STACK_H
 
@@ -39,6 +35,7 @@ DATA pop(STACK *s);
 DATA top(STACK *s);
 int is_empty(STACK *s);
 void print_stack(STACK *s);
+DATA * Find_Elem(STACK* s, long i);
 
 #define STACK_OPERATION_PROTO(_type, _name)   \
   void push_##_name(STACK *s, _type val);     \
