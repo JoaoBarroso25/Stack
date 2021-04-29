@@ -133,6 +133,10 @@ DATA * Find_Elem(STACK* s, long i) {
     return NULL;
 }
 
+/*! \def STACKOPERATION(_type, _name)
+ *  \brief POP e PUSH
+ * 
+ */
 #define STACK_OPERATION(_type, _name)         \
   void push_##_name(STACK *s, _type val) {    \
     DATA elem;                                \
