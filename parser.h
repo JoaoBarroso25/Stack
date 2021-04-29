@@ -1,3 +1,6 @@
+/** @file Ficheiro Parser.h
+ */
+
 #pragma once
 #include "stack.h"
 
