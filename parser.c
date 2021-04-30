@@ -10,6 +10,12 @@
 #include "stack.h"
 #include "parser.h"
 
+/**
+ * \brief Função CreateAZ
+ *
+ * Função CreateAZ--> Função que cria um array onde ficam armazenados valores que podem ser alterados ao longo do código. 
+ *
+*/
 int* CreateAZ()
 {
     int* aux,i;
