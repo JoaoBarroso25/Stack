@@ -86,15 +86,16 @@ void parser(char* line, STACK* s) {
     }
     print_stack(s);
 }
-    /**
-     * \brief Função Operations
-     *
-     * Função Operations --> Onde estão localizadas todas as implementações, desde Expressões Matemáticas, à manipulação da Stack, entre outros.
-     *
-     * @param s     --> Corresponde à stack.
-     * @param token --> Recebe um caractere ao qual se vai fazer a comparação de modo a ser executada a operação desejada.
-     */
-    void Oprations(STACK *s, char *token, int *AZ) {
+
+/**
+* \brief Função Operations
+*
+* Função Operations --> Onde estão localizadas todas as implementações, desde Expressões Matemáticas, à manipulação da Stack, entre outros.
+*
+* @param s     --> Corresponde à stack.
+* @param token --> Recebe um caractere ao qual se vai fazer a comparação de modo a ser executada a operação desejada.
+*/
+void Oprations(STACK *s, char *token, int *AZ) {
     DATA Y, X, Z, XY, *P;
     XY.LONG = 0;
     XY.DOUBLE = 0;
