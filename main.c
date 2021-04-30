@@ -15,7 +15,7 @@
  *
  * @param line --> Recebe o endereço de memória da linha.
  *
- * @return --> O comprimento da String "aux" menos dois.
+ * @return (strlen(aux) - 2) 
  */
 int ReadNewLine(char* line)
 {
@@ -34,7 +34,7 @@ int ReadNewLine(char* line)
  *
  * Função Principal do Programa
  *
- * @return --> Retorna 0.
+ * @return 0 
  */
 int main() {
     char line[10240], aux[10240];
