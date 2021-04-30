@@ -13,7 +13,7 @@
  *
  * Função ReadNewLine
  *
- * @param  --> Recebe o endereço de memória da linha.
+ * @param line --> Recebe o endereço de memória da linha.
  *
  * @return --> O comprimento da String "aux" menos dois.
  */
