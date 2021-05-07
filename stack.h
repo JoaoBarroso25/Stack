@@ -14,7 +14,7 @@
 
 #include <assert.h>
 
-/*! \enum ENUM
+/** \enum ENUM
  *  \brief Atribui um valor a cada tipo: LONG,DOUBLE,CHAR,STRING.
  *
  */
@@ -32,7 +32,7 @@ typedef enum {LONG = 1, DOUBLE = 2, CHAR = 4, STRING = 8} TYPE;
  */
 #define NUMBER   (INTEGER | DOUBLE)
 
-/*! \struct Struct com os Tipos.
+/** \struct Struct com os Tipos.
  *  \brief Struct onde estão definidas todas os tipos possíveis para o Projeto.
  *
  */
@@ -45,7 +45,7 @@ typedef struct data {
     char *STRING; /*!< Definido o apontador para Char. */
 } DATA; /*!< Nome atribuído à Struct. */
 
-/*! \struct Struct com a Stack.
+/** \struct Struct com a Stack.
  *  \brief Struct onde estão definidas a stack, o seu tamanho e o número de elementos que tem.
  *
  */
@@ -64,7 +64,7 @@ int is_empty(STACK *s);
 void print_stack(STACK *s);
 DATA * Find_Elem(STACK* s, long i);
 
-/*! \def STACK_OPERATIONS
+/** \def STACK_OPERATIONS
  *  \brief POP e PUSH name.
  *
  */
