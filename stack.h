@@ -1,4 +1,4 @@
-** @file Ficheiro Stack.h
+/** @file Ficheiro Stack.h
  */
 #ifndef UNTITLED13_STACK_H
 #define UNTITLED13_STACK_H
