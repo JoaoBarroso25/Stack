@@ -18,10 +18,7 @@ typedef enum {LONG = 1, DOUBLE = 2, CHAR = 4, STRING = 8} TYPE;
 /** INTEGER Onde é definido um Inteiro, como LONG ou CHAR. */
 #define INTEGER  (LONG | CHAR)
 
-/*! \def NUMERO
- *  \brief Onde é definido um Número, como INTERGER ou DOUBLE.
- *
- */
+/** NUMERO Onde é definido um Número, como INTERGER ou DOUBLE. */
 #define NUMBER   (INTEGER | DOUBLE)
 
 /** Struct onde estão definidas todas os tipos possíveis para o Projeto. */
