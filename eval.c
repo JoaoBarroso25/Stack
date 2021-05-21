@@ -8,6 +8,16 @@
 #include "eval.h"
 #include "parser.h"
 
+/**
+ * \brief Função Get_Delimited
+ *
+ * Função Get_Delimited
+ *
+ * @param rest --> Serve para devolver o resto da linha
+ * @param line --> A linha que recebe
+ *
+ * @return newline
+ */
 char* get_delimited(char* line, char** rest)
 {
     char* newline;
@@ -27,6 +37,16 @@ char* get_delimited(char* line, char** rest)
     return newline;
 }
 
+/**
+ * \brief Função Eval
+ *
+ * Função Eval
+ *
+ * @param init_st --> Stack Inicial.
+ * @param line --> A linha que recebe.
+ *
+ * @return init_st
+ */
 STACK* eval(char* line, STACK* init_st)
 {
 
@@ -75,74 +95,7 @@ STACK* eval(char* line, STACK* init_st)
         elem1.ARRAY = st;
         push(init_st, elem1);
     }
-    // falta meter a stack st como um elemento da stack init_st
-
+    
     return init_st;
 }
 
-
-
-
-
-
-
-
-
-/*
-char* get_token(char* line, char** rest)
-{
-    char* token;
-    char seps[] = " \t\n\"";
-    char* newline = NULL;
-
-    if (line == NULL) return NULL;
-
-    if ((newline = (char*)malloc(strlen(line) * sizeof(char))) == NULL) return NULL;
-    strcpy(newline, line);
-
-    token = strtok(newline, seps);
-    if (token == NULL) return NULL;
-
-//    if ((*rest = (char*)malloc((strlen(line) - strlen(token)+1)*sizeof(char))) == NULL) return NULL;
-    if ((*rest = (char*)malloc((strlen(line)) * sizeof(char))) == NULL) return NULL;
-
-    if (strlen(line) > 1) {
-        memcpy(*rest, line + strlen(token) + 1, (strlen(line) - strlen(token) - 1));
-        (*rest)[(strlen(line) - strlen(token) - 1)] = '\0';
-    }
-    else (*rest) = NULL;
- //       strcpy(*rest, line);
- //       (*rest)[strlen(line)] = '\0';
-//   if(newline!=NULL) free(newline);
-
-    return token;
-}
-*/
-
-
-
-/*
-while ((token = get_token(line, &rest)) != NULL) {
-    elem.LONG = strtol(token, &sobra_l, 10);
-    elem.DOUBLE = strtod(token, &sobra_d);
-    if (strlen(sobra_l) == 0) {
-        elem.type = LONG;
-        push(init_st, elem);
-    }
-    else {
-        if (strlen(sobra_d) == 0) {
-            elem.type = DOUBLE;
-            push(init_st, elem);
-        }
-        else {
-            evalOprations(init_st, token, rest);
-        }
-    }
-    if (rest != NULL) {
-        strcpy(line, rest);
-        free(rest);
-    }
-    else line = rest;
-}
-*/
-//    print_stack(init_st);
