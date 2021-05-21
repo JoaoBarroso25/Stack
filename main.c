@@ -37,18 +37,27 @@ int ReadNewLine(char* line)
  * @return 0 
  */
 int main() {
-    char line[10240], aux[10240];
+    char *line, aux[1024];
     STACK* s;
     int i,count;
 
     s = create_stack();
-    assert(fgets(aux, 10240, stdin) != NULL);
+    line = (char *)malloc(1024 * sizeof(char));
+    assert(fgets(aux, 1024, stdin) != NULL);
     assert( aux[strlen(aux) - 1] == '\n');
 
     line[0] = '\0';
     i = 0;
     count = 0;
+
     while (aux[i] != '\n'){
+        if (aux[i] == '\"') {
+            do{
+                line[count] = aux[i];
+                i++;
+                count++;
+            }while (aux[i] != '\"');
+        }
         if (aux[i] != 'l') {
             line[count] = aux[i];
         }
@@ -57,7 +66,6 @@ int main() {
         count++;
         line[count] = '\0';
     }
-
     parser(line, s);
 
     return 0;
