@@ -43,16 +43,15 @@ int* CreateAZ()
  * @param s     --> Corresponde à stack.
  */
 void parser(char* line, STACK* s) {
-    char delims[] = " \t\n";
+    // char delims[] = " \t\n";
     DATA elem;
-    char* sobra_l, *sobra_d;
+    char* sobra_l, * sobra_d;
     elem.type = LONG;
-    int *AZ;
-
+    int* AZ;
+    char *token, *rest;
     AZ = CreateAZ();
 
-    for (char* token = strtok(line, delims); token != NULL; token = strtok(NULL, delims)) {
-        //   long val_i = strtol(token, &sobra, 10);
+    while((token = get_token(line, &rest))!=NULL){
         elem.LONG = strtol(token, &sobra_l, 10);
         elem.DOUBLE = strtod(token, &sobra_d);
         if (strlen(sobra_l) == 0) {
@@ -65,11 +64,16 @@ void parser(char* line, STACK* s) {
                 push(s, elem);
             }
             else {
-                Oprations(s, token, AZ);
+                if ((*token == '[') || (*token == '\"')) s = eval(token, s);
+                else Oprations(s, token, AZ);
             }
         }
+        // free(line);
+        line = rest;
     }
     print_stack(s);
+    printf("\n");
+
 }
 
 /**
