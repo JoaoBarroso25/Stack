@@ -95,29 +95,28 @@ void parser(char* line, STACK* s) {
 * @param s     --> Corresponde à stack.
 * @param token --> Recebe um caractere ao qual se vai fazer a comparação de modo a ser executada a operação desejada.
 */
-void Oprations(STACK *s, char *token, int *AZ) {
-    DATA Y, X, Z, XY, *P;
+void Oprations(STACK* s, char* token, int* AZ)
+{
+    DATA Y, X, Z, XY, * P;
     XY.LONG = 0;
     XY.DOUBLE = 0;
 
-    if (strcmp(token, "+") == 0) {
-        Y = pop(s);
-        X = pop(s);
-        if (X.type == LONG && Y.type == LONG) XY.type = LONG;
-        else XY.type = DOUBLE;
-        XY.LONG = X.LONG + Y.LONG;
-        XY.DOUBLE = X.DOUBLE + Y.DOUBLE;
-        push(s, XY);
-    }
-    if (strcmp(token, "*") == 0) {
-        Y = pop(s);
-        X = pop(s);
-        if (X.type == LONG && Y.type == LONG) XY.type = LONG;
-        else XY.type = DOUBLE;
-        XY.LONG = X.LONG * Y.LONG;
-        XY.DOUBLE = X.DOUBLE * Y.DOUBLE;
-        push(s, XY);
-    }
+    if (strcmp(token, "+") == 0) op_plus(s);
+
+    if (strcmp(token, "*") == 0) op_star(s);
+
+
+    /*
+       {
+           Y = pop(s);
+           X = pop(s);
+           if (X.type == LONG && Y.type == LONG) XY.type = LONG;
+           else XY.type = DOUBLE;
+           XY.LONG = X.LONG * Y.LONG;
+           XY.DOUBLE = X.DOUBLE * Y.DOUBLE;
+           push(s, XY);
+       }
+   */
     if (strcmp(token, "-") == 0) {
         Y = pop(s);
         X = pop(s);
@@ -132,7 +131,7 @@ void Oprations(STACK *s, char *token, int *AZ) {
         X = pop(s);
         if (X.type == LONG && Y.type == LONG) XY.type = LONG;
         else XY.type = DOUBLE;
-        XY.LONG = (int) (X.LONG / Y.LONG);
+        XY.LONG = (int)(X.LONG / Y.LONG);
         XY.DOUBLE = X.DOUBLE / Y.DOUBLE;
         push(s, XY);
     }
@@ -160,37 +159,17 @@ void Oprations(STACK *s, char *token, int *AZ) {
         XY.LONG = X.LONG | Y.LONG;
         push(s, XY);
     }
-    if (strcmp(token, "#") == 0) {
-        Y = pop(s);
-        X = pop(s);
-        XY.LONG = (long) pow(X.LONG, Y.LONG);
-        XY.DOUBLE = pow(X.DOUBLE, Y.DOUBLE);
-        XY.type = DOUBLE;
-        push(s, XY);
-    }
-    if (strcmp(token, ")") == 0) {
-        X = pop(s);
-        X.LONG = X.LONG + 1;
-        X.DOUBLE = X.DOUBLE + 1;
-        X.CHAR = X.CHAR + 1;
-        push(s, X);
-    }
-    if (strcmp(token, "(") == 0) {
-        X = pop(s);
-        X.LONG = X.LONG - 1;
-        X.DOUBLE = X.DOUBLE - 1;
-        X.CHAR = X.CHAR - 1;
-        push(s, X);
-    }
-    if (strcmp(token, "~") == 0) {
-        X = pop(s);
-        XY.LONG = ~(X.LONG);
-        push(s, XY);
-    }
+    if (strcmp(token, "#") == 0) op_sharp(s);
+
+    if (strcmp(token, ")") == 0) op_remove_last(s);
+
+    if (strcmp(token, "(") == 0) op_remove_first(s);
+
+    if (strcmp(token, "~") == 0) op_explosion(s);
+
     if (strcmp(token, "_") == 0) {
         X = top(s);
         push(s, X);
-        //        push(s, X);
     }
     if (strcmp(token, ";") == 0) {
         X = pop(s);
@@ -216,7 +195,7 @@ void Oprations(STACK *s, char *token, int *AZ) {
     }
     if (strcmp(token, "c") == 0) {
         X = pop(s);
-        X.CHAR = (char) X.LONG;
+        X.CHAR = (char)X.LONG;
         X.type = CHAR;
         push(s, X);
     }
@@ -230,43 +209,53 @@ void Oprations(STACK *s, char *token, int *AZ) {
         X.type = DOUBLE;
         push(s, X);
     }
-    if (strcmp(token, "=") == 0) {
-        Y = pop(s);
-        X = pop(s);
-        X.type = DOUBLE;
-        if (X.DOUBLE == Y.DOUBLE) X.DOUBLE = 1;
-        else X.DOUBLE = 0;
-        push(s, X);
-    }
-    if (strcmp(token, ">") == 0) {
-        Y = pop(s);
-        X = pop(s);
-        X.type = DOUBLE;
-        if (X.DOUBLE > Y.DOUBLE) X.DOUBLE = 1;
-        else X.DOUBLE = 0;
-        push(s, X);
-    }
-    if (strcmp(token, "<") == 0) {
-        Y = pop(s);
-        X = pop(s);
-        X.type = DOUBLE;
-        if (X.DOUBLE < Y.DOUBLE) X.DOUBLE = 1;
-        else X.DOUBLE = 0;
-        push(s, X);
-    }
+    if (strcmp(token, "=") == 0) op_equal(s);
+
+    if (strcmp(token, ">") == 0) op_higher(s);
+
+    if (strcmp(token, "<") == 0) op_lower(s);
+
     if (strcmp(token, "e>") == 0) {
         Y = pop(s);
         X = pop(s);
+        if ((X.type != ARRAY) && (Y.type != ARRAY) && (X.type != STRING) && (Y.type != STRING)) {
+        if (X.DOUBLE > Y.DOUBLE) {
         X.type = DOUBLE;
-        if (X.DOUBLE > Y.DOUBLE) push(s, X);
+        push(s, X);
+        }
         else push(s, Y);
+            }
+        if  ((X.type == STRING) && (Y.type == STRING)) {
+            if ( strlen (X.STRING) >= strlen (Y.STRING)) {
+                X.type = STRING;
+                push (s, X);
+            }
+            else {
+                Y.type = STRING;
+                push (s, Y);
+            }
+        }
     }
     if (strcmp(token, "e<") == 0) {
         Y = pop(s);
         X = pop(s);
-        X.type = DOUBLE;
-        if (X.DOUBLE < Y.DOUBLE) push(s, X);
+        if ((X.type != ARRAY) && (Y.type != ARRAY) && (X.type != STRING) && (Y.type != STRING)) {
+        if (X.DOUBLE < Y.DOUBLE) {
+            push(s, X);
+            X.type = DOUBLE;
+        }
         else push(s, Y);
+            }
+        if  ((X.type == STRING) && (Y.type == STRING)) {
+                if ( strlen (X.STRING) < strlen (Y.STRING)) {
+                    X.type = STRING;
+                    push (s, X);
+                }
+                else {
+                    Y.type = STRING;
+                    push (s, Y);
+                    }
+                }
     }
     if (strcmp(token, "!") == 0) {
         X = pop(s);
@@ -274,7 +263,8 @@ void Oprations(STACK *s, char *token, int *AZ) {
         if (X.DOUBLE != 0) {
             X.DOUBLE = 0;
             X.LONG = 0;
-        } else {
+        }
+        else {
             X.DOUBLE = 1;
             X.LONG = 1;
         }
@@ -287,19 +277,24 @@ void Oprations(STACK *s, char *token, int *AZ) {
             if (X.DOUBLE == 0 || Y.DOUBLE == 0) {
                 X.DOUBLE = 0;
                 push(s, X);
-            } else {
+            }
+            else {
                 if (X.DOUBLE >= Y.DOUBLE) {
                     push(s, X);
-                } else push(s, Y);
+                }
+                else push(s, Y);
             }
-        } else {
+        }
+        else {
             if (X.LONG == 0 || Y.LONG == 0) { // esta linha
                 X.LONG = 0;
                 push(s, X);
-            } else {
+            }
+            else {
                 if (X.LONG >= Y.LONG) {
                     push(s, X);
-                } else push(s, Y);
+                }
+                else push(s, Y);
             }
         }
     }
@@ -309,19 +304,19 @@ void Oprations(STACK *s, char *token, int *AZ) {
         if (X.type == DOUBLE || Y.type == DOUBLE) {
             if (X.DOUBLE == 0 || Y.DOUBLE == 0) {
                 X.DOUBLE = 0;
-                push (s,X);
+                push(s, X);
             }
             else {
-                if (X.DOUBLE >= Y.DOUBLE) push (s, X);
+                if (X.DOUBLE >= Y.DOUBLE) push(s, X);
                 else push(s, Y);
             }
         }
         else {
             if (X.DOUBLE == 0 || Y.DOUBLE == 0) {
                 X.DOUBLE = 0;
-                push (s,X);
+                push(s, X);
             }
-            else if (X.LONG >= Y.LONG) push (s, X);
+            else if (X.LONG >= Y.LONG) push(s, X);
             else push(s, Y);
         }
     }
@@ -332,135 +327,18 @@ void Oprations(STACK *s, char *token, int *AZ) {
         if (Z.LONG == 0 || Z.DOUBLE == 0) {
             push(s, X);
         }
-        else push(s,Y);
-        }
-    if (strcmp(token, "A") == 0) {
-        X.LONG = AZ[0];
-        X.DOUBLE = AZ[0];
-        X.type = LONG;
-        push(s, X);
+        else push(s, Y);
     }
-    if (strcmp(token, "B") == 0) {
-        X.LONG = AZ[1];
-        X.DOUBLE = AZ[1];
-        X.type = LONG;
-        push(s, X);
-    }
-    if (strcmp(token, "C") == 0) {
-        X.LONG = AZ[2];
-        X.DOUBLE = AZ[2];
-        X.type = LONG;
-        push(s, X);
-    }
-    if (strcmp(token, "D") == 0) {
-        X.LONG = AZ[3];
-        X.DOUBLE = AZ[3];
-        X.type = LONG;
-        push(s, X);
-    }
-    if (strcmp(token, "E") == 0) {
-        X.LONG = AZ[4];
-        X.DOUBLE = AZ[4];
-        X.type = LONG;
-        push(s, X);
 
-    }
-    if (strcmp(token, "F") == 0) {
-        X.LONG = AZ[5];
-        X.DOUBLE = AZ[5];
+
+    if ((strcmp(token, "A") >= 0) && (strcmp(token, "Z") <= 0) && (strcmp(token, "N") != 0) && (strcmp(token, "S") != 0)){
+        X.LONG = AZ[(int)(*token)-65];
+//        X.DOUBLE = AZ[(int)(*token) - 65];
         X.type = LONG;
         push(s, X);
     }
-    if (strcmp(token, "G") == 0) {
-        X.LONG = AZ[6];
-        X.DOUBLE = AZ[6];
-        X.type = LONG;
-        push(s, X);
-    }
-    if (strcmp(token, "H") == 0) {
-        X.LONG = AZ[7];
-        X.DOUBLE = AZ[7];
-        X.type = LONG;
-        push(s, X);
-    }
-    if (strcmp(token, "I") == 0) {
-        X.LONG = AZ[8];
-        X.DOUBLE = AZ[8];
-        X.type = LONG;
-        push(s, X);
-    }
-    if (strcmp(token, "J") == 0) {
-        X.LONG = AZ[9];
-        X.DOUBLE = AZ[9];
-        X.type = LONG;
-        push(s, X);
-    }
-    if (strcmp(token, "K") == 0) {
-        X.LONG = AZ[10];
-        X.DOUBLE = AZ[10];
-        X.type = LONG;
-        push(s, X);
-    }
-    if (strcmp(token, "L") == 0) {
-        X.LONG = AZ[11];
-        X.DOUBLE = AZ[11];
-        X.type = LONG;
-        push(s, X);
-    }
-    if (strcmp(token, "M") == 0) {
-        X.LONG = AZ[12];
-        X.DOUBLE = AZ[12];
-        X.type = LONG;
-        push(s, X);
-    }
-    if (strcmp(token, "O") == 0) {
-        X.LONG = AZ[14];
-        X.DOUBLE = AZ[14];
-        X.type = LONG;
-        push(s, X);
-    }
-    if (strcmp(token, "P") == 0) {
-        X.LONG = AZ[15];
-        X.DOUBLE = AZ[15];
-        X.type = LONG;
-        push(s, X);
-    }
-    if (strcmp(token, "Q") == 0) {
-        X.LONG = AZ[16];
-        X.DOUBLE = AZ[16];
-        X.type = LONG;
-        push(s, X);
-    }
-    if (strcmp(token, "R") == 0) {
-        X.LONG = AZ[17];
-        X.DOUBLE = AZ[17];
-        X.type = LONG;
-        push(s, X);
-    }
-    if (strcmp(token, "T") == 0) {
-        X.LONG = AZ[19];
-        X.DOUBLE = AZ[19];
-        X.type = LONG;
-        push(s, X);
-    }
-    if (strcmp(token, "U") == 0) {
-        X.LONG = AZ[20];
-        X.DOUBLE = AZ[20];
-        X.type = LONG;
-        push(s, X);
-    }
-    if (strcmp(token, "V") == 0) {
-        X.LONG = AZ[21];
-        X.DOUBLE = AZ[21];
-        X.type = LONG;
-        push(s, X);
-    }
-    if (strcmp(token, "W") == 0) {
-        X.LONG = AZ[22];
-        X.DOUBLE = AZ[22];
-        X.type = LONG;
-        push(s, X);
-    }
+
+
     if (strcmp(token, "N") == 0) { // VERIFICAR
         X.CHAR = '\n';
         X.type = CHAR;
@@ -471,115 +349,326 @@ void Oprations(STACK *s, char *token, int *AZ) {
         X.type = CHAR;
         push(s, X);
     }
-    if (strcmp(token, "X") == 0) {
-        X.LONG = 0;
+
+    if ((strcmp(token, ":A") >= 0) && (strcmp(token, ":Z") <= 0)) {
+        X = top(s);
+        AZ[(int)(*(token+1)) - 65] = X.LONG;
+    }
+
+    if (strcmp(token, ",") == 0) op_comma(s);
+
+
+}
+
+void op_comma(STACK* s)
+{
+    DATA Y, X, XY;
+    XY.LONG = 0;
+    XY.DOUBLE = 0;
+
+    X = pop(s);
+    Y.type = LONG;
+    if (X.type == LONG){
+        XY.ARRAY = create_stack();
+        XY.type = ARRAY;
+        for (Y.LONG = 0; Y.LONG < X.LONG; Y.LONG++)  push(XY.ARRAY, Y);
+        push(s, XY);
+    }
+    if (X.type == ARRAY) {
+        X.LONG = X.ARRAY->n_elems;
         X.type = LONG;
         push(s, X);
     }
-    if (strcmp(token, "Y") == 0) {
-        X.LONG = 1;
+    if (X.type == STRING) {
+        X.LONG = strlen(X.STRING);
         X.type = LONG;
         push(s, X);
-    }
-    if (strcmp(token, "Z") == 0) {
-        X.LONG = 2;
-        X.type = LONG;
-        push(s, X);
-    }
-    if (strcmp(token, ":A") == 0) {
-        X = top(s);
-        AZ[0] = X.LONG;
-    }
-    if (strcmp(token, ":B") == 0) {
-        X = top(s);
-        AZ[1] = X.LONG;
-    }
-    if (strcmp(token, ":C") == 0) {
-        X = top(s);
-        AZ[2] = X.LONG;
-    }
-    if (strcmp(token, ":D") == 0) {
-        X = top(s);
-        AZ[3] = X.LONG;
-    }
-    if (strcmp(token, ":E") == 0) {
-        X = top(s);
-        AZ[4] = X.LONG;
-    }
-    if (strcmp(token, ":F") == 0) {
-        X = top(s);
-        AZ[5] = X.LONG;
-    }
-    if (strcmp(token, ":G") == 0) {
-        X = top(s);
-        AZ[6] = X.LONG;
-    }
-    if (strcmp(token, ":H") == 0) {
-        X = top(s);
-        AZ[7] = X.LONG;
-    }
-    if (strcmp(token, ":I") == 0) {
-        X = top(s);
-        AZ[8] = X.LONG;
-    }
-    if (strcmp(token, ":J") == 0) {
-        X = top(s);
-        AZ[9] = X.LONG;
-    }
-    if (strcmp(token, ":K") == 0) {
-        X = top(s);
-        AZ[10] = X.LONG;
-    }
-    if (strcmp(token, ":L") == 0) {
-        X = top(s);
-        AZ[11] = X.LONG;
-    }
-    if (strcmp(token, ":M") == 0) {
-        X = top(s);
-        AZ[12] = X.LONG;
-    }
-    if (strcmp(token, ":O") == 0) {
-        X = top(s);
-        AZ[14] = X.LONG;
-    }
-    if (strcmp(token, ":P") == 0) {
-        X = top(s);
-        AZ[15] = X.LONG;
-    }
-    if (strcmp(token, ":Q") == 0) {
-        X = top(s);
-        AZ[16] = X.LONG;
-    }
-    if (strcmp(token, ":R") == 0) {
-        X = top(s);
-        AZ[17] = X.LONG;
-    }
-    if (strcmp(token, ":T") == 0) {
-        X = top(s);
-        AZ[19] = X.LONG;
-    }
-    if (strcmp(token, ":U") == 0) {
-        X = top(s);
-        AZ[20] = X.LONG;
-    }
-    if (strcmp(token, ":V") == 0) {
-        X = top(s);
-        AZ[21] = X.LONG;
-    }
-    if (strcmp(token, ":W") == 0) {
-        X = top(s);
-        AZ[22] = X.LONG;
-    }
-    if (strcmp(token, ":X") == 0) {
-        X = top(s);
-        AZ[23] = X.LONG;
-    }
-    if (strcmp(token, ":Y") == 0) {
-        X = top(s);
-        AZ[24] = X.LONG;
-    }
-    if (strcmp(token, ":Z") == 0) {
-        X = top(s);
-        AZ[25] = X.LONG;
     }
 }
+
+void op_plus(STACK* s)
+{
+    DATA Y, X, XY;
+    XY.LONG = 0;
+    XY.DOUBLE = 0;
+
+    Y = pop(s);
+    X = pop(s);
+
+    if ((X.type != ARRAY) && (Y.type != ARRAY) && (X.type != STRING) && (Y.type != STRING)) {
+        if (X.type == LONG && Y.type == LONG) XY.type = LONG;
+        else XY.type = DOUBLE;
+        XY.LONG = X.LONG + Y.LONG;
+        XY.DOUBLE = X.DOUBLE + Y.DOUBLE;
+        push(s, XY);
+    }
+
+    if ((X.type == ARRAY) && (Y.type == ARRAY)) {
+        for (int i = 0; i < Y.ARRAY->n_elems; i++) {
+            XY = Y.ARRAY->stack[i];
+            push(X.ARRAY, XY);
+        }
+        free(Y.ARRAY);
+        push(s, X);
+    }
+
+    if ((X.type == ARRAY) && (Y.type != ARRAY)) {
+        push(X.ARRAY, Y);
+        push(s, X);
+    }
+
+    if ((X.type != ARRAY) && (Y.type == ARRAY)) {
+        XY.ARRAY = create_stack();
+        XY.type = ARRAY;
+        push(XY.ARRAY, X);
+        for (int i = 1; i < Y.ARRAY->n_elems; i++)
+            push(XY.ARRAY, Y);
+        push(s, XY);
+        //       free(Y.ARRAY);
+    }
+
+    if ((X.type == STRING) && (Y.type == STRING)) {
+        strcat(X.STRING, Y.STRING);
+        push(s, X);
+    }
+
+
+}
+
+void op_star(STACK *s)
+{
+    DATA Y, X, XY;
+    XY.LONG = 0;
+    XY.DOUBLE = 0;
+    XY.STRING = NULL;
+    int xsize;
+
+    Y = pop(s);
+    X = pop(s);
+    if ((X.type != ARRAY) && (Y.type != ARRAY) && (X.type != STRING) && (Y.type != STRING)) {
+        if (X.type == LONG && Y.type == LONG) XY.type = LONG;
+        else XY.type = DOUBLE;
+        XY.LONG = X.LONG * Y.LONG;
+        XY.DOUBLE = X.DOUBLE * Y.DOUBLE;
+        push(s, XY);
+    }
+    if ( X.type == ARRAY && Y.type == LONG) {
+        xsize = X.ARRAY->n_elems;
+        for (int j = 1; j < Y.LONG; j++) {
+            for (int i = 0; i < xsize; i++) {
+                XY = X.ARRAY->stack[i];
+                push(X.ARRAY, XY);
+            }
+        }
+        push(s, X);
+    }
+    if (X.type == STRING && Y.type == LONG) {
+        XY.STRING = (char *)malloc(strlen(X.STRING) * sizeof(char));
+        strcpy(XY.STRING, X.STRING);
+        for (int j = 1; j < Y.LONG; j++) {
+            strcat(X.STRING, XY.STRING);
+        }
+        push(s, X);
+    }
+
+}
+
+void op_equal(STACK* s)
+{
+    DATA Y, X, XY;
+
+    XY.type = LONG;
+    Y = pop(s);
+    X = pop(s);
+
+    if ((X.type != ARRAY) && (Y.type != ARRAY) && (X.type != STRING) && (Y.type != STRING)) {
+        X.type = DOUBLE;
+        if (X.DOUBLE == Y.DOUBLE) X.DOUBLE = 1;
+        else X.DOUBLE = 0;
+        push(s, X);
+    }
+    if ((X.type == ARRAY) && (Y.type == LONG)) push(s, X.ARRAY->stack[Y.LONG]);
+    if ((X.type == STRING) && (Y.type == STRING)) {
+        if ( strcmp (X.STRING, Y.STRING) == 0 ) XY.LONG = 1;
+        else XY.LONG = 0;
+        push (s, XY);
+    }
+
+}
+
+
+
+void op_higher(STACK* s)
+{
+
+    DATA Y, X, Z, XY;
+    unsigned int j, i;
+
+    Y = pop(s);
+    X = pop(s);
+
+    if ((X.type != ARRAY) && (Y.type != ARRAY) && (X.type != STRING) && (Y.type != STRING)) {
+        X.type = DOUBLE;
+        if (X.DOUBLE > Y.DOUBLE) X.DOUBLE = 1;
+        else X.DOUBLE = 0;
+        push(s, X);
+    }
+    if((X.type == ARRAY) && (Y.type == LONG)) {
+        XY.ARRAY = create_stack();
+        XY.type = ARRAY;
+        for (int i = X.ARRAY->n_elems-Y.LONG; i < X.ARRAY->n_elems; i++) {
+            Z = X.ARRAY->stack[i];
+            push(XY.ARRAY, Z);
+        }
+        push(s, XY);
+    }
+    if ((X.type == STRING) && (Y.type == LONG)) {
+        for (j=0, i = strlen(X.STRING) - Y.LONG; i < strlen(X.STRING); i++, j++)
+            X.STRING[j] = X.STRING[i];
+
+        X.STRING[j] = '\0';
+        push(s, X);
+    }
+    if ((X.type = STRING)&&(Y.type = STRING)) {
+        if ( strlen (X.STRING) > strlen (Y.STRING)) {
+            X.type = LONG;
+            X.LONG = 0;
+            push (s, X);
+        }
+        else {
+            X.type = LONG;
+            X.LONG = 1;
+            push (s, X);
+        }
+    }
+}
+
+void op_lower(STACK* s)
+{
+    DATA Y, X, Z, XY;
+
+    Y = pop(s);
+    X = pop(s);
+    if ((X.type != ARRAY) && (Y.type != ARRAY) && (X.type != STRING) && (Y.type != STRING)) {
+        X.type = DOUBLE;
+        if (X.DOUBLE < Y.DOUBLE) X.DOUBLE = 1;
+        else X.DOUBLE = 0;
+        push(s, X);
+    }
+    if ((X.type == ARRAY) && (Y.type == LONG)) {
+        XY.ARRAY = create_stack();
+        XY.type = ARRAY;
+        for (int i = 0; i < Y.LONG; i++) {
+            Z = X.ARRAY->stack[i];
+            push(XY.ARRAY, Z);
+        }
+        push(s, XY);
+    }
+    if ((X.type == STRING) && (Y.type == LONG)) {
+        X.STRING[Y.LONG] = '\0';
+        push(s, X);
+    }
+    if ((X.type == STRING) && (Y.type == STRING)) {
+       if ( strlen (X.STRING) < strlen (Y.STRING)) {
+           X.type = LONG;
+           X.LONG = 1;
+           push (s, X);
+           }
+           else {
+           X.type = LONG;
+           X.LONG = 0;
+           push (s, X);
+       }
+    }
+
+}
+void op_remove_first(STACK* s)
+{
+    DATA Y, X, XY, Z;
+
+    X = pop(s);
+
+    if ((X.type != ARRAY) && (X.type != STRING)) {
+        X = pop(s);
+        X.LONG = X.LONG - 1;
+        X.DOUBLE = X.DOUBLE - 1;
+        X.CHAR = X.CHAR - 1;
+        push(s, X);
+    }
+    if (X.type == ARRAY) {
+        XY.ARRAY = create_stack();
+        XY.type = ARRAY;
+        Z = X.ARRAY->stack[0];
+        for (int i = 1; i < X.ARRAY->n_elems; i++){
+            Y = X.ARRAY->stack[i];
+            push(XY.ARRAY, Y);
+        }
+        push(s, XY);
+        push(s, Z);
+    }
+}
+
+void op_remove_last (STACK* s)
+{
+    DATA Y, X;
+
+    X = pop(s);
+
+
+    if ((X.type != ARRAY) && (X.type != STRING)) {
+        X.LONG = X.LONG + 1;
+        X.DOUBLE = X.DOUBLE + 1;
+        X.CHAR = X.CHAR + 1;
+        push(s, X);
+    }
+    if (X.type == ARRAY) {
+        Y = pop(X.ARRAY);
+        push(s, X);
+        push(s, Y);
+    }
+}
+
+void op_sharp(STACK* s)
+{
+    DATA X, Y, XY;
+
+    Y = pop(s);
+    X = pop(s);
+
+    if ((X.type != ARRAY) && (Y.type != ARRAY) && (X.type != STRING) && (Y.type != STRING)) {
+        XY.LONG = (long)pow(X.LONG, Y.LONG);
+        XY.DOUBLE = pow(X.DOUBLE, Y.DOUBLE);
+        XY.type = DOUBLE;
+        push(s, XY);
+    }
+
+    if (X.type == STRING && Y.type == STRING){
+        XY.STRING = strstr(X.STRING, Y.STRING);
+        if (XY.STRING != NULL) XY.LONG = XY.STRING - X.STRING;
+        else XY.LONG = -1;
+        XY.type = LONG;
+        push(s, XY);
+    }
+}
+
+void op_explosion(STACK *s)
+{
+    DATA X,XY;
+
+    XY.type = LONG;
+    X = pop(s);
+
+    if (X.type != ARRAY) {
+        X = pop(s);
+        XY.LONG = ~(X.LONG);
+        push(s, XY);
+    }
+
+    if (X.type == ARRAY) {
+        for (int i = 0; i < X.ARRAY->n_elems; i++) {
+            XY = X.ARRAY->stack[i];
+            push(s, XY);
+        }
+    }
+}
+
