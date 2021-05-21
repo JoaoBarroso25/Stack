@@ -94,6 +94,7 @@ void parser(char* line, STACK* s) {
 *
 * @param s     --> Corresponde à stack.
 * @param token --> Recebe um caractere ao qual se vai fazer a comparação de modo a ser executada a operação desejada.
+* @param AZ    --> Corresponde ao Array.
 */
 void Oprations(STACK* s, char* token, int* AZ)
 {
