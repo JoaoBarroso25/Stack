@@ -104,19 +104,7 @@ void Oprations(STACK* s, char* token, int* AZ)
     if (strcmp(token, "+") == 0) op_plus(s);
 
     if (strcmp(token, "*") == 0) op_star(s);
-
-
-    /*
-       {
-           Y = pop(s);
-           X = pop(s);
-           if (X.type == LONG && Y.type == LONG) XY.type = LONG;
-           else XY.type = DOUBLE;
-           XY.LONG = X.LONG * Y.LONG;
-           XY.DOUBLE = X.DOUBLE * Y.DOUBLE;
-           push(s, XY);
-       }
-   */
+    
     if (strcmp(token, "-") == 0) {
         Y = pop(s);
         X = pop(s);
@@ -270,7 +258,7 @@ void Oprations(STACK* s, char* token, int* AZ)
         }
         push(s, X);
     }
-    if (strcmp(token, "e&") == 0) {   // verficar ainda
+    if (strcmp(token, "e&") == 0) {   
         Y = pop(s);
         X = pop(s);
         if (X.type == DOUBLE && Y.type == DOUBLE) {
@@ -286,7 +274,7 @@ void Oprations(STACK* s, char* token, int* AZ)
             }
         }
         else {
-            if (X.LONG == 0 || Y.LONG == 0) { // esta linha
+            if (X.LONG == 0 || Y.LONG == 0) { 
                 X.LONG = 0;
                 push(s, X);
             }
@@ -298,7 +286,7 @@ void Oprations(STACK* s, char* token, int* AZ)
             }
         }
     }
-    if (strcmp(token, "e|") == 0) {   // verficar - acho que ja esta bem
+    if (strcmp(token, "e|") == 0) {   
         X = pop(s);
         Y = pop(s);
         if (X.type == DOUBLE || Y.type == DOUBLE) {
@@ -320,7 +308,7 @@ void Oprations(STACK* s, char* token, int* AZ)
             else push(s, Y);
         }
     }
-    if (strcmp(token, "?") == 0) { // verficar - x y z com ordem trocada
+    if (strcmp(token, "?") == 0) { 
         X = pop(s);
         Y = pop(s);
         Z = pop(s);
@@ -344,7 +332,7 @@ void Oprations(STACK* s, char* token, int* AZ)
         X.type = CHAR;
         push(s, X);
     }
-    if (strcmp(token, "S") == 0) { // VERIFICAR
+    if (strcmp(token, "S") == 0) { 
         X.CHAR = ' ';
         X.type = CHAR;
         push(s, X);
