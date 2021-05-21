@@ -1,3 +1,6 @@
+/**
+ *  @file Eval - Receber a linha e a stack inicial, se não existe stack inicial => cria, enquanto houver linha, pega no token, tratar números, trata arrays, tratar strings, tratar operações, linha passa a ser o resto, devolve stack atual.
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
