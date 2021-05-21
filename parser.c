@@ -18,31 +18,16 @@
 */
 int* CreateAZ()
 {
-    int* aux,i;
-    if ((aux = (int*)calloc(26,sizeof(int))) == NULL)
+    int* aux, i;
+    if ((aux = (int*)calloc(26, sizeof(int))) == NULL)
         return NULL;
 
+    // A -> F
     for (i = 0; i < 6; i++)
         aux[i] = 10 + i;
-    // A -> F
-    aux[6] = 0; // G
-    aux[7] = 0; // H
-    aux[8] = 0; // I
-    aux[9] = 0; // J
-    aux[10] = 0; // K
-    aux[11] = 0; // L
-    aux[12] = 0; // M
-    // N
-    aux[14] = 0; // O
-    aux[15] = 0; // P
-    aux[16] = 0; // Q
-    aux[17] = 0; // R
-    // S
-    aux[19] = 0; // T
-    aux[20] = 0; // U
-    aux[21] = 0; // V
-    aux[22] = 0; // W
-    aux[23] = 0; // X
+
+    // G -> X - Já estão inicializados a zero com o calloc
+
     aux[24] = 1; // Y
     aux[25] = 2; // Z
 
@@ -357,10 +342,15 @@ void Oprations(STACK* s, char* token, int* AZ)
     }
 
     if (strcmp(token, ",") == 0) op_comma(s);
-
-
 }
 
+/**
+* \brief Função Op_Comma
+*
+* Função Op_Comma --> Tamanho ou range.
+*
+* @param s     --> Corresponde à stack.
+*/
 void op_comma(STACK* s)
 {
     DATA Y, X, XY;
@@ -387,6 +377,13 @@ void op_comma(STACK* s)
     }
 }
 
+/**
+* \brief Função Op_Plus
+*
+* Função Op_Plus --> Concatenar strings ou arrays.
+*
+* @param s     --> Corresponde à stack.
+*/
 void op_plus(STACK* s)
 {
     DATA Y, X, XY;
@@ -432,10 +429,15 @@ void op_plus(STACK* s)
         strcat(X.STRING, Y.STRING);
         push(s, X);
     }
-
-
 }
 
+/**
+* \brief Função Op_Star
+*
+* Função Op_Star --> Concatenar várias vezes strings ou arrays.
+*
+* @param s     --> Corresponde à stack.
+*/
 void op_star(STACK *s)
 {
     DATA Y, X, XY;
@@ -474,6 +476,13 @@ void op_star(STACK *s)
 
 }
 
+/**
+* \brief Função Op_Equal
+*
+* Função Op_Equal -->  Ir buscar um valor por índice.
+*
+* @param s     --> Corresponde à stack.
+*/
 void op_equal(STACK* s)
 {
     DATA Y, X, XY;
@@ -497,8 +506,13 @@ void op_equal(STACK* s)
 
 }
 
-
-
+/**
+* \brief Função Op_Higher
+*
+* Função Op_Higher --> Ir buscar X elems/carat do início ou fim.
+*
+* @param s     --> Corresponde à stack.
+*/
 void op_higher(STACK* s)
 {
 
@@ -544,6 +558,13 @@ void op_higher(STACK* s)
     }
 }
 
+/**
+* \brief Função Op_Lower
+*
+* Função Op_Lower --> Ir buscar X elems/carat do início ou fim.
+*
+* @param s     --> Corresponde à stack.
+*/
 void op_lower(STACK* s)
 {
     DATA Y, X, Z, XY;
@@ -583,6 +604,14 @@ void op_lower(STACK* s)
     }
 
 }
+
+/**
+* \brief Função Op_Remove_First
+*
+* Função Op_Remove_First --> Remover 1º ou últ. elt. e colocar na stack após o array/string.
+*
+* @param s               --> Corresponde à stack.
+*/
 void op_remove_first(STACK* s)
 {
     DATA Y, X, XY, Z;
@@ -609,6 +638,13 @@ void op_remove_first(STACK* s)
     }
 }
 
+/**
+* \brief Função Op_Remove_Last
+*
+* Função Op_Remove_Last --> Remover 1º ou últ. elt. e colocar na stack após o array/string.
+*
+* @param s              --> Corresponde à stack.
+*/
 void op_remove_last (STACK* s)
 {
     DATA Y, X;
@@ -629,6 +665,13 @@ void op_remove_last (STACK* s)
     }
 }
 
+/**
+* \brief Função Op_Sharp
+*
+* Função Op_Sharp -->  Procurar substring na string e devolver o índice ou -1 se não encontrar.
+*
+* @param s        --> Corresponde à stack.
+*/
 void op_sharp(STACK* s)
 {
     DATA X, Y, XY;
@@ -652,6 +695,13 @@ void op_sharp(STACK* s)
     }
 }
 
+/**
+* \brief Função Op_Explosion
+*
+* Função Op_Explosion --> Colocar na stack todos os elementos do array.
+*
+* @param s            --> Corresponde à stack.
+*/
 void op_explosion(STACK *s)
 {
     DATA X,XY;
